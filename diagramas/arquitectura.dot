@@ -1,0 +1,1 @@
+digraph G {graph [rankdir=TB];node [shape=box,style="rounded,filled",fillcolor="#eaf2fa",fontname="DejaVu Sans"];UI[label="Presentación\nConsola Java"];BL[label="Lógica de negocio\nValidaciones / servicios"];DAO[label="Persistencia\nJDBC / consultas preparadas"];DB[label="MySQL 8\nSIGDB"];UI->BL;BL->DAO;DAO->DB[label="TCP 3306 / JDBC"];}

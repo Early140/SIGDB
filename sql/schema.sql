@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS sigdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE sigdb;
+CREATE TABLE usuario (id_usuario BIGINT PRIMARY KEY AUTO_INCREMENT,nombre VARCHAR(100) NOT NULL,email VARCHAR(150) NOT NULL UNIQUE,password_hash VARCHAR(255) NOT NULL,rol ENUM('ADMIN','ENTRENADOR','COORDINADOR') NOT NULL,activo BOOLEAN NOT NULL DEFAULT TRUE);
+CREATE TABLE entrenador (id_entrenador BIGINT PRIMARY KEY AUTO_INCREMENT,id_usuario BIGINT NOT NULL UNIQUE,nombre VARCHAR(80) NOT NULL,apellido VARCHAR(80) NOT NULL,activo BOOLEAN NOT NULL DEFAULT TRUE,FOREIGN KEY(id_usuario) REFERENCES usuario(id_usuario));
+CREATE TABLE categoria (id_categoria BIGINT PRIMARY KEY AUTO_INCREMENT,nombre VARCHAR(60) NOT NULL,rama ENUM('MASCULINA','FEMENINA','MIXTA') NOT NULL,temporada SMALLINT NOT NULL,UNIQUE(nombre,rama,temporada));
+CREATE TABLE jugador (id_jugador BIGINT PRIMARY KEY AUTO_INCREMENT,nombre VARCHAR(80) NOT NULL,apellido VARCHAR(80) NOT NULL,fecha_nacimiento DATE NOT NULL,activo BOOLEAN NOT NULL DEFAULT TRUE);
+CREATE TABLE jugador_categoria (id_jugador BIGINT NOT NULL,id_categoria BIGINT NOT NULL,fecha_alta DATE NOT NULL,PRIMARY KEY(id_jugador,id_categoria),FOREIGN KEY(id_jugador) REFERENCES jugador(id_jugador),FOREIGN KEY(id_categoria) REFERENCES categoria(id_categoria));
+CREATE TABLE entrenador_categoria (id_entrenador BIGINT NOT NULL,id_categoria BIGINT NOT NULL,PRIMARY KEY(id_entrenador,id_categoria),FOREIGN KEY(id_entrenador) REFERENCES entrenador(id_entrenador),FOREIGN KEY(id_categoria) REFERENCES categoria(id_categoria));
+CREATE TABLE entrenamiento (id_entrenamiento BIGINT PRIMARY KEY AUTO_INCREMENT,fecha DATE NOT NULL,id_categoria BIGINT NOT NULL,id_entrenador BIGINT NOT NULL,turno VARCHAR(30) NOT NULL DEFAULT 'GENERAL',FOREIGN KEY(id_categoria) REFERENCES categoria(id_categoria),FOREIGN KEY(id_entrenador,id_categoria) REFERENCES entrenador_categoria(id_entrenador,id_categoria),UNIQUE(fecha,id_categoria,id_entrenador,turno));
+CREATE TABLE asistencia (id_asistencia BIGINT PRIMARY KEY AUTO_INCREMENT,id_entrenamiento BIGINT NOT NULL,id_jugador BIGINT NOT NULL,estado ENUM('PRESENTE','AUSENTE') NOT NULL,observacion VARCHAR(255),FOREIGN KEY(id_entrenamiento) REFERENCES entrenamiento(id_entrenamiento),FOREIGN KEY(id_jugador) REFERENCES jugador(id_jugador),UNIQUE(id_entrenamiento,id_jugador));
+CREATE INDEX idx_entrenamiento_fecha ON entrenamiento(fecha);
+CREATE INDEX idx_asistencia_jugador ON asistencia(id_jugador);
