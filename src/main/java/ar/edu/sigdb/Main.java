@@ -2,6 +2,7 @@ package ar.edu.sigdb;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.Scanner;
+import ar.edu.sigdb.model.*;
 
 /** Prototipo operacional de consola; autenticación y permisos previstos para otro incremento. */
 public class Main {
@@ -10,7 +11,8 @@ public class Main {
   }
   static void altaJugador(Connection c,Scanner sc) throws SQLException {
     System.out.print("Nombre: ");String nombre=sc.nextLine();System.out.print("Apellido: ");String apellido=sc.nextLine();System.out.print("Nacimiento (AAAA-MM-DD): ");LocalDate fecha=LocalDate.parse(sc.nextLine());
-    if(nombre.isBlank()||apellido.isBlank()) throw new IllegalArgumentException("Nombre y apellido obligatorios");
+    Jugador jugador=new Jugador(0,nombre,apellido,fecha);
+    System.out.println(jugador.descripcion());
     try(PreparedStatement p=c.prepareStatement("INSERT INTO jugador(nombre,apellido,fecha_nacimiento) VALUES(?,?,?)")){p.setString(1,nombre);p.setString(2,apellido);p.setDate(3,Date.valueOf(fecha));p.executeUpdate();System.out.println("Jugador guardado");}
   }
   static void listar(Connection c) throws SQLException {
@@ -31,6 +33,6 @@ public class Main {
     try(PreparedStatement p=c.prepareStatement("SELECT e.fecha,c.nombre,a.estado FROM asistencia a JOIN entrenamiento e ON e.id_entrenamiento=a.id_entrenamiento JOIN categoria c ON c.id_categoria=e.id_categoria WHERE a.id_jugador=? ORDER BY e.fecha")){p.setLong(1,id);try(ResultSet r=p.executeQuery()){while(r.next())System.out.printf("%s | %s | %s%n",r.getDate(1),r.getString(2),r.getString(3));}}
   }
   public static void main(String[] args) {
-    try(Connection c=conectar();Scanner sc=new Scanner(System.in)){System.out.println("SIGDB - Prototipo Java/MySQL");while(true){System.out.print("1 Alta jugador | 2 Listar | 3 Asignar categoría | 4 Asistencia | 5 Historial | 0 Salir: ");String op=sc.nextLine();if(op.equals("0"))break;try{switch(op){case "1"->altaJugador(c,sc);case "2"->listar(c);case "3"->asignar(c,sc);case "4"->asistencia(c,sc);case "5"->historial(c,sc);default->System.out.println("Opción desconocida");}}catch(Exception e){System.err.println("Operación rechazada: "+e.getMessage());}}}catch(SQLException e){System.err.println("Error de conexión: "+e.getMessage());}
+    try(Connection c=conectar();Scanner sc=new Scanner(System.in)){System.out.println("SIGDB - Prototipo Java/MySQL");while(true){System.out.print("1 Alta jugador | 2 Listar | 3 Asignar categoría | 4 Asistencia | 5 Historial | 6 Demo POO | 0 Salir: ");String op=sc.nextLine();if(op.equals("0"))break;try{switch(op){case "1"->altaJugador(c,sc);case "2"->listar(c);case "3"->asignar(c,sc);case "4"->asistencia(c,sc);case "5"->historial(c,sc);case "6"->DemoPOO.main(new String[0]);default->System.out.println("Opción desconocida");}}catch(Exception e){System.err.println("Operación rechazada: "+e.getMessage());}}}catch(SQLException e){System.err.println("Error de conexión: "+e.getMessage());}
   }
 }

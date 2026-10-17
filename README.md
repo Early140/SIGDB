@@ -13,3 +13,10 @@ Se implementan alta/listado de jugadores, asignación de categoría, registro o 
 
 ## GitHub
 Publicar esta carpeta en un repositorio propio y reemplazar en el informe el campo de URL pendiente por el enlace real.
+
+## Incremento TP3 - Programación Orientada a Objetos
+Se incorporaron `Persona` (clase abstracta, atributos privados y validaciones), `Jugador` y `Entrenador` (herencia y sobrescritura polimórfica), y `DemoPOO` (recorrido de una lista de objetos mediante referencia de tipo base). El menú principal incorpora la opción 6 para demostrar POO. El alta de jugadores instancia y valida un objeto `Jugador` antes de persistirlo mediante JDBC.
+
+**Prueba sin MySQL:** compilar las clases de `src/main/java/ar/edu/sigdb/model/` y ejecutar `ar.edu.sigdb.model.DemoPOO`.
+
+**Aplicación completa:** configurar `SIGDB_URL`, `SIGDB_USER` y `SIGDB_PASSWORD`, ejecutar `sql/schema.sql` en MySQL, compilar con Maven (`mvn package`) y ejecutar `ar.edu.sigdb.Main` con el conector JDBC en el classpath. No se incluyen credenciales.
