@@ -20,3 +20,17 @@ Se incorporaron `Persona` (clase abstracta, atributos privados y validaciones), 
 **Prueba sin MySQL:** compilar las clases de `src/main/java/ar/edu/sigdb/model/` y ejecutar `ar.edu.sigdb.model.DemoPOO`.
 
 **Aplicación completa:** configurar `SIGDB_URL`, `SIGDB_USER` y `SIGDB_PASSWORD`, ejecutar `sql/schema.sql` en MySQL, compilar con Maven (`mvn package`) y ejecutar `ar.edu.sigdb.Main` con el conector JDBC en el classpath. No se incluyen credenciales.
+
+
+## Incremento TP4 (2026)
+Se incorporó el patrón DAO: `JugadorDAO` define el contrato y `JugadorDAOImpl` encapsula JDBC y las consultas preparadas. `Conexion` centraliza la apertura de conexiones. El menú suma 7 (listar con `ArrayList`), 8 (actualizar nombre/apellido) y 9 (arreglo de estados). Las opciones 1 a 6 permanecen disponibles.
+
+### Ejecución
+1. Instalar Java 17, Maven y MySQL 8.
+2. Ejecutar `sql/schema.sql` en MySQL. Crear el usuario de aplicación con permisos para la base `sigdb` (o usar credenciales propias).
+3. Configurar `SIGDB_URL`, `SIGDB_USER` y `SIGDB_PASSWORD` como variables de entorno.
+4. Ejecutar `mvn compile` y `mvn exec:java -Dexec.mainClass=ar.edu.sigdb.Main` (requiere acceso a Maven Central para descargar el conector).
+5. Crear previamente categorías, usuarios y entrenadores para las opciones de asignación/asistencia; consultar `sql/operaciones.sql`.
+
+### Verificaciones pendientes
+Se comprobó la compilación sintáctica de las clases Java con `javac`. La conexión real a MySQL y las pruebas integrales deben ejecutarse en una computadora con MySQL y el controlador JDBC disponibles.

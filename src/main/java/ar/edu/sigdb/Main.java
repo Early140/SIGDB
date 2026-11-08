@@ -3,11 +3,13 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.Scanner;
 import ar.edu.sigdb.model.*;
+import ar.edu.sigdb.dao.*;
+import java.util.ArrayList;
 
 /** Prototipo operacional de consola; autenticación y permisos previstos para otro incremento. */
 public class Main {
   static Connection conectar() throws SQLException {
-    return DriverManager.getConnection(System.getenv().getOrDefault("SIGDB_URL","jdbc:mysql://localhost:3306/sigdb"),System.getenv().getOrDefault("SIGDB_USER","sigdb_app"),System.getenv().getOrDefault("SIGDB_PASSWORD",""));
+    return ar.edu.sigdb.db.Conexion.abrir();
   }
   static void altaJugador(Connection c,Scanner sc) throws SQLException {
     System.out.print("Nombre: ");String nombre=sc.nextLine();System.out.print("Apellido: ");String apellido=sc.nextLine();System.out.print("Nacimiento (AAAA-MM-DD): ");LocalDate fecha=LocalDate.parse(sc.nextLine());
@@ -32,7 +34,24 @@ public class Main {
     System.out.print("ID jugador: ");long id=Long.parseLong(sc.nextLine());
     try(PreparedStatement p=c.prepareStatement("SELECT e.fecha,c.nombre,a.estado FROM asistencia a JOIN entrenamiento e ON e.id_entrenamiento=a.id_entrenamiento JOIN categoria c ON c.id_categoria=e.id_categoria WHERE a.id_jugador=? ORDER BY e.fecha")){p.setLong(1,id);try(ResultSet r=p.executeQuery()){while(r.next())System.out.printf("%s | %s | %s%n",r.getDate(1),r.getString(2),r.getString(3));}}
   }
+  static void listarDAO() throws SQLException {
+    JugadorDAO dao=new JugadorDAOImpl();
+    ArrayList<Jugador> jugadores=dao.listar();
+    System.out.println("Jugadores encontrados: "+jugadores.size());
+    for(Jugador j:jugadores) System.out.printf("%d | %s%n",j.getId(),j.descripcion());
+  }
+  static void actualizarDAO(Scanner sc) throws SQLException {
+    System.out.print("ID jugador: ");long id=Long.parseLong(sc.nextLine());
+    System.out.print("Nuevo nombre: ");String nombre=sc.nextLine();
+    System.out.print("Nuevo apellido: ");String apellido=sc.nextLine();
+    boolean ok=new JugadorDAOImpl().actualizar(id,nombre,apellido);
+    System.out.println(ok?"Jugador actualizado":"No se encontró el jugador");
+  }
+  static void estadosDisponibles(){
+    String[] estados={"PRESENTE","AUSENTE"};
+    for(int i=0;i<estados.length;i++)System.out.printf("%d - %s%n",i+1,estados[i]);
+  }
   public static void main(String[] args) {
-    try(Connection c=conectar();Scanner sc=new Scanner(System.in)){System.out.println("SIGDB - Prototipo Java/MySQL");while(true){System.out.print("1 Alta jugador | 2 Listar | 3 Asignar categoría | 4 Asistencia | 5 Historial | 6 Demo POO | 0 Salir: ");String op=sc.nextLine();if(op.equals("0"))break;try{switch(op){case "1"->altaJugador(c,sc);case "2"->listar(c);case "3"->asignar(c,sc);case "4"->asistencia(c,sc);case "5"->historial(c,sc);case "6"->DemoPOO.main(new String[0]);default->System.out.println("Opción desconocida");}}catch(Exception e){System.err.println("Operación rechazada: "+e.getMessage());}}}catch(SQLException e){System.err.println("Error de conexión: "+e.getMessage());}
+    try(Connection c=conectar();Scanner sc=new Scanner(System.in)){System.out.println("SIGDB - Prototipo Java/MySQL");while(true){System.out.print("1 Alta jugador | 2 Listar | 3 Asignar categoría | 4 Asistencia | 5 Historial | 6 Demo POO | 7 Listar DAO | 8 Actualizar jugador | 9 Estados | 0 Salir: ");String op=sc.nextLine();if(op.equals("0"))break;try{switch(op){case "1"->altaJugador(c,sc);case "2"->listar(c);case "3"->asignar(c,sc);case "4"->asistencia(c,sc);case "5"->historial(c,sc);case "6"->DemoPOO.main(new String[0]);case "7"->listarDAO();case "8"->actualizarDAO(sc);case "9"->estadosDisponibles();default->System.out.println("Opción desconocida");}}catch(Exception e){System.err.println("Operación rechazada: "+e.getMessage());}}}catch(SQLException e){System.err.println("Error de conexión: "+e.getMessage());}
   }
 }

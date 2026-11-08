@@ -1,0 +1,8 @@
+ar\edu\sigdb\model\DemoPOO.class
+ar\edu\sigdb\model\Persona.class
+ar\edu\sigdb\model\Jugador.class
+ar\edu\sigdb\dao\JugadorDAO.class
+ar\edu\sigdb\Main.class
+ar\edu\sigdb\model\Entrenador.class
+ar\edu\sigdb\dao\JugadorDAOImpl.class
+ar\edu\sigdb\db\Conexion.class

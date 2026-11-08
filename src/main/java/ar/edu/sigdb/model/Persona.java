@@ -12,5 +12,6 @@ public abstract class Persona {
  public String getNombre(){return nombre;}
  public String getApellido(){return apellido;}
  public void setNombre(String nombre){if(nombre==null||nombre.isBlank())throw new IllegalArgumentException("Nombre obligatorio");this.nombre=nombre.trim();}
+ public void setApellido(String apellido){if(apellido==null||apellido.isBlank())throw new IllegalArgumentException("Apellido obligatorio");this.apellido=apellido.trim();}
  public abstract String descripcion();
 }
